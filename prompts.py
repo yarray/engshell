@@ -1,8 +1,11 @@
-from keys import OPENAI_KEY
+# from keys import OPENAI_KEY
 import platform
 import os
 
-USERNAME = os.getlogin()
+try:
+    USERNAME = os.getlogin()
+except:
+    USERNAME = 'user'
 OPERATING_SYSTEM = platform.system()
 PYTHON_VERSION = platform.python_version()
 # in need of good prompt engineering

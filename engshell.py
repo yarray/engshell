@@ -4,13 +4,12 @@ from colorama import Fore, Style
 import os
 import sys
 from prompts import *
-from keys import *
+# from keys import *
 import subprocess
 import io
 import contextlib
 import platform
 
-openai.api_key = OPENAI_KEY
 MAX_PROMPT = 20480
 CONTEXT_LEFT, CONTEXT_RIGHT = '{', '}'
 engshell_PREVIX = lambda: Style.RESET_ALL + os.getcwd() + ' ' + Style.RESET_ALL + Fore.MAGENTA + "engshell" + Style.RESET_ALL + '>'
@@ -88,7 +87,7 @@ def LLM(prompt, mode='text'):
         ]
     response = openai.ChatCompletion.create(
       #model="gpt-4",
-      model="gpt-3.5-turbo-0301",
+      model="gpt-3.5-turbo",
       messages=messages,
       temperature = 0.0
     )
@@ -98,7 +97,7 @@ def LLM(prompt, mode='text'):
     return response_content
 
 def containerize_code(code_string):
-    code_string = code_string.replace('your_openai_api_key_here', OPENAI_KEY)
+    code_string = code_string.replace('your_openai_api_key_here', openai.api_key)
     # uncomment this if you wish to easily use photos from Unsplash API
     # code_string = code_string.replace('your_unsplash_access_key_here', UNSPLASH_ACCESS_KEY)
     try:
@@ -202,6 +201,7 @@ if __name__ == "__main__":
                 run_code = False
             except Exception as e:
                 error_message = str(e)
+                print(error_message)
                 console_output = error_message
                 run_code = any([err in error_message for err in RETRY_ERRORS])
             if len(console_output) < MAX_PROMPT:
