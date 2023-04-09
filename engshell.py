@@ -9,6 +9,7 @@ import subprocess
 import io
 import contextlib
 import platform
+import readline
 
 MAX_PROMPT = 20480
 CONTEXT_LEFT, CONTEXT_RIGHT = '{', '}'
@@ -19,8 +20,11 @@ MAX_DEBUG_ATTEMPTS = 2
 RETRY_ERRORS = ["The server had an error while processing your request. Sorry about that!"]
 memory = []
 
+
 def print_console_prompt():
-    print(engshell_PREVIX(), end="")
+    prompt = engshell_PREVIX() + readline.get_line_buffer()
+    print(prompt, end="")
+
 
 def print_status(status):
     print_console_prompt()
@@ -99,7 +103,7 @@ def LLM(prompt, mode='text'):
 def containerize_code(code_string):
     code_string = code_string.replace('your_openai_api_key_here', openai.api_key)
     # uncomment this if you wish to easily use photos from Unsplash API
-    # code_string = code_string.replace('your_unsplash_access_key_here', UNSPLASH_ACCESS_KEY)
+    code_string = code_string.replace('your_unsplash_access_key_here', os.environ.get('UNSPLASH_ACCESS_KEY', ''))
     try:
         output_buffer = io.StringIO()
         with contextlib.redirect_stdout(output_buffer):
@@ -151,9 +155,9 @@ def clear_memory():
             {"role": "assistant", "content": CODE_ASSISTANT_CALIBRATION_MESSAGE},
             {"role": "system", "content": CONSOLE_OUTPUT_CALIBRATION_MESSAGE},
             # uncomment these if you wish to easily use photos from Unsplash API
-            #{"role": "user", "content": CODE_USER_CALIBRATION_MESSAGE3},
-            #{"role": "assistant", "content": CODE_ASSISTANT_CALIBRATION_MESSAGE3},
-            #{"role": "system", "content": CONSOLE_OUTPUT_CALIBRATION_MESSAGE3},
+            {"role": "user", "content": CODE_USER_CALIBRATION_MESSAGE_UNSPLASH_EXAMPLE},
+            {"role": "assistant", "content": CODE_ASSISTANT_CALIBRATION_MESSAGE_UNSPLASH_EXAMPLE},
+            {"role": "system", "content": CONSOLE_OUTPUT_CALIBRATION_MESSAGE_UNSPLASH_EXAMPLE},
     ]
 
 if __name__ == "__main__":
